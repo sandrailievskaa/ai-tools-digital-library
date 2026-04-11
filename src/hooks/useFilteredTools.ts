@@ -42,7 +42,7 @@ export function useFilteredTools() {
     setSelectedTags([]);
   };
 
-  const hasActiveFilters = search || selectedCategories.length > 0 || selectedDifficulty || selectedUseCases.length > 0 || selectedTags.length > 0;
+  const hasActiveFilters = !!(search || selectedCategories.length > 0 || selectedDifficulty || selectedUseCases.length > 0 || selectedTags.length > 0);
 
   return {
     search, setSearch,
