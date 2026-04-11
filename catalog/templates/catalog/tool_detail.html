@@ -1,0 +1,120 @@
+{% extends "catalog/saas_app.html" %}
+{% load catalog_tags %}
+
+{% block title %}{{ tool.name }} — Digital Library{% endblock %}
+
+{% block app_body %}
+<main class="flex-grow-1 max-w-app py-4 pb-5 mx-auto px-3">
+  <a href="{% url 'catalog:index' %}" class="small text-muted text-decoration-none d-inline-flex align-items-center gap-1 mb-4">← Back to catalog</a>
+
+  <div class="row g-4 g-lg-5 align-items-start">
+    <div class="col-lg-7">
+      <div class="card-glass p-4 p-lg-5 mb-4">
+        <div class="d-flex flex-wrap gap-2 mb-3">
+          {% if tool.ai_type %}<span class="pill pill-sky">{{ tool.ai_type.name }}</span>{% endif %}
+          {% if tool.category %}<span class="pill">{{ tool.category.name }}</span>{% endif %}
+          <span class="pill-muted">{{ tool.difficulty }}</span>
+          {% if tool.format_type %}<span class="pill-muted">{{ tool.format_type }}</span>{% endif %}
+        </div>
+        <h1 class="hero-title mb-3" style="font-size:clamp(1.75rem,3vw,2.25rem);">{{ tool.name }}</h1>
+        <p class="lead text-muted mb-0">{{ tool.description }}</p>
+        <div class="d-flex flex-wrap gap-2 mt-4">
+          <form method="post" action="{% url 'catalog:toggle_favorite' tool.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+            <button type="submit" class="btn-ghost">{% if is_favorite %}♥ Saved{% else %}♡ Add to favorites{% endif %}</button>
+          </form>
+          {% if tool.link %}
+            <a class="btn-primary-saas" href="{{ tool.link }}" target="_blank" rel="noopener noreferrer">Open website →</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="card-glass p-4 p-lg-5 mb-4">
+        <h2 class="h5 fw-semibold mb-3">About this object</h2>
+        <div class="text-muted">{{ tool.long_description|default:tool.description|linebreaksbr }}</div>
+      </div>
+
+      <div class="card-glass p-4 p-lg-5 mb-4">
+        <h2 class="h5 fw-semibold mb-2">Keywords &amp; tags</h2>
+        <p class="small text-muted mb-3">SEO-style keywords and controlled vocabulary facets.</p>
+        {% if tool.keywords %}
+          <div class="d-flex flex-wrap gap-1 mb-3">
+            {% for kw in tool.keywords|split_csv %}
+              <span class="badge rounded-pill px-2 py-1 small kw-badge">{{ kw }}</span>
+            {% endfor %}
+          </div>
+        {% endif %}
+        <div>
+          {% for tag in tool.tags.all %}
+            <a class="tag-chip" href="{% url 'catalog:index' %}{% toggle_list_param 'tag' tag.slug %}">{{ tag.name }}</a>
+          {% endfor %}
+        </div>
+      </div>
+
+      {% if tutorials %}
+      <div class="card-glass p-4 p-lg-5">
+        <h2 class="h5 fw-semibold mb-3">Tutorials</h2>
+        <ul class="list-unstyled vstack gap-3 mb-0">
+          {% for tut in tutorials %}
+            <li>
+              <a href="{{ tut.link }}" class="fw-semibold text-reset text-decoration-none" target="_blank" rel="noopener noreferrer">{{ tut.title }} →</a>
+              {% if tut.description %}<p class="small text-muted mb-0 mt-1">{{ tut.description }}</p>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card-glass p-4 mb-4 text-center">
+        {% with purl=tool|preview_url %}
+          {% if purl %}
+            <img src="{{ purl }}" class="img-fluid rounded-3 mb-3" style="max-height:220px;object-fit:cover;width:100%;" alt="" onerror="this.style.display='none'">
+          {% endif %}
+        {% endwith %}
+        <div class="text-start small">
+          <div class="section-kicker mb-2">Structured metadata</div>
+          <ul class="list-unstyled text-muted mb-0">
+            <li class="mb-2"><strong class="text-reset">Slug:</strong> {{ tool.slug }}</li>
+            <li class="mb-2"><strong class="text-reset">Popularity (mock):</strong> {{ tool.popularity_score|floatformat:1 }}</li>
+            <li class="mb-2"><strong class="text-reset">Indexed:</strong> {% if tool.is_indexed %}yes{% else %}pending{% endif %}</li>
+            <li><strong class="text-reset">Added:</strong> {{ tool.created_at|date:"M j, Y" }}</li>
+          </ul>
+        </div>
+      </div>
+
+      {% if tool.metadata_json %}
+      <div class="card-glass p-4">
+        <h3 class="h6 fw-semibold mb-2">Source record (JSON)</h3>
+        <pre class="small text-muted mb-0 p-3 rounded-3 overflow-auto" style="max-height:200px;background:var(--surface-solid);border:1px solid var(--border);font-size:0.7rem;">{{ tool.metadata_json|json_pp }}</pre>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if related_tools %}
+  <section class="mt-5 pt-4">
+    <h2 class="h5 fw-semibold mb-3">Related tools</h2>
+    <p class="small text-muted mb-3">Same category or overlapping tags.</p>
+    <div class="row g-3">
+      {% for t in related_tools %}
+        <div class="col-md-6 col-xl-3">{% include "catalog/partials/tool_card.html" with tool=t favorite_ids=favorite_ids %}</div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if you_may_like %}
+  <section class="mt-4">
+    <h2 class="h5 fw-semibold mb-3">You may also like</h2>
+    <div class="row g-3">
+      {% for t in you_may_like %}
+        <div class="col-md-6 col-xl-3">{% include "catalog/partials/tool_card.html" with tool=t favorite_ids=favorite_ids %}</div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+</main>
+{% endblock %}

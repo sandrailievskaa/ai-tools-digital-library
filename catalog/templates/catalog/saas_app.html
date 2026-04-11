@@ -1,0 +1,66 @@
+{% extends "catalog/base.html" %}
+{% load static %}
+
+{% block body %}
+<form class="d-none" aria-hidden="true">{% csrf_token %}</form>
+<div class="app-shell">
+  {% include "catalog/partials/app_sidebar.html" %}
+  <div class="app-main flex-grow-1 min-vh-100 d-flex flex-column min-w-0">
+    {% include "catalog/partials/navbar.html" %}
+    <div class="flex-grow-1">
+      {% block app_body %}{% endblock %}
+    </div>
+  </div>
+</div>
+
+{% include "catalog/partials/mobile_dock.html" %}
+
+<div class="modal fade" id="toolPreviewModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content card-glass border-0">
+      <div class="modal-header border-0 pb-0">
+        <h2 class="modal-title h5 fw-semibold">Quick preview</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-2" id="toolPreviewModalBody">
+        <p class="text-muted small mb-0">Loading…</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{ favorite_slugs|json_script:"fav-slugs-data" }}
+
+<script>
+(function () {
+  function getCookie(name) {
+    var m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return m ? decodeURIComponent(m[2]) : '';
+  }
+  var el = document.getElementById('fav-slugs-data');
+  if (!el) return;
+  try {
+    var server = JSON.parse(el.textContent);
+    var local = JSON.parse(localStorage.getItem('dl_fav_slugs') || '[]');
+    if (!Array.isArray(server)) server = [];
+    if (!Array.isArray(local)) local = [];
+    var needsSync = local.some(function (s) { return server.indexOf(s) === -1; });
+    if (needsSync) {
+      var merged = [];
+      server.forEach(function (s) { if (merged.indexOf(s) === -1) merged.push(s); });
+      local.forEach(function (s) { if (merged.indexOf(s) === -1) merged.push(s); });
+      fetch('{% url "catalog:sync_favorites" %}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ slugs: merged })
+      }).then(function () { window.location.reload(); });
+    } else {
+      localStorage.setItem('dl_fav_slugs', JSON.stringify(server));
+    }
+  } catch (e) { /* ignore */ }
+})();
+</script>
+{% endblock %}

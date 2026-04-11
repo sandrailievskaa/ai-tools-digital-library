@@ -1,0 +1,302 @@
+{% extends "catalog/saas_app.html" %}
+{% load catalog_tags %}
+
+{% block title %}Digital Library of AI Tools &amp; Tutorials{% endblock %}
+
+{% block app_body %}
+<main class="flex-grow-1 catalog-page">
+  {% if show_hero %}
+  <section class="max-w-app py-5 py-lg-5 mx-auto px-3">
+    <p class="section-kicker mb-2">Metadata · Classification · Retrieval</p>
+    <h1 class="hero-title">Digital library of <span class="text-gradient">AI tools</span> &amp; tutorials</h1>
+    <p class="text-muted lead mb-4" style="max-width:36rem;font-size:1.05rem;">
+      Curated digital objects with structured metadata, faceted filters, and a lightweight search index—mirroring how real digital libraries organize knowledge.
+    </p>
+    <div class="d-flex flex-wrap gap-2 mb-5">
+      <span class="pill">Semantic fields</span>
+      <span class="pill pill-sky">Controlled vocabulary</span>
+      <span class="pill" style="background:rgba(167,139,250,0.15);color:var(--purple);">Faceted browse</span>
+    </div>
+
+    <form class="d-md-none mb-4" method="get" action="{% url 'catalog:index' %}" id="mobile-catalog-search">
+      {% for key, values in request.GET.lists %}
+        {% if key != 'q' %}
+          {% for v in values %}<input type="hidden" name="{{ key }}" value="{{ v }}">{% endfor %}
+        {% endif %}
+      {% endfor %}
+      <label class="sr-only" for="mq">Search</label>
+      <input class="form-control form-control-lg rounded-3" id="mq" name="q" type="search" placeholder="Search catalog…" value="{{ search_q }}" autocomplete="off">
+    </form>
+
+    <div class="row row-cols-2 row-cols-md-4 g-3 mb-5">
+      <div class="col"><div class="stat-tile"><div class="stat-value text-gradient">{{ stats.total }}</div><div class="small text-muted">Objects</div></div></div>
+      <div class="col"><div class="stat-tile"><div class="stat-value">{{ stats.categories }}</div><div class="small text-muted">Categories</div></div></div>
+      <div class="col"><div class="stat-tile"><div class="stat-value">{{ stats.types }}</div><div class="small text-muted">Types</div></div></div>
+      <div class="col"><div class="stat-tile"><div class="stat-value">{{ stats.tags }}</div><div class="small text-muted">Keywords</div></div></div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="h5 fw-semibold mb-0" style="letter-spacing:-0.02em;">Popular in catalog</h2>
+      <a class="small fw-medium" href="{% url 'catalog:dashboard' %}">Analytics →</a>
+    </div>
+    <div class="d-flex gap-3 overflow-x-auto pb-2 mb-5" style="scroll-snap-type:x mandatory;">
+      {% for tool in popular_tools %}
+        <div class="flex-shrink-0" style="width:280px;scroll-snap-align:start;">
+          {% include "catalog/partials/tool_card.html" with tool=tool favorite_ids=favorite_ids %}
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if suggested_tools %}
+    <h2 class="h5 fw-semibold mb-3" style="letter-spacing:-0.02em;">Suggested next</h2>
+    <div class="row g-3 mb-5">
+      {% for tool in suggested_tools %}
+        <div class="col-md-4">{% include "catalog/partials/tool_card.html" with tool=tool favorite_ids=favorite_ids %}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <hr class="opacity-25 my-5">
+  </section>
+  {% endif %}
+
+  <div class="max-w-app pb-5 mx-auto px-3">
+    {% include "catalog/partials/catalog_main.html" %}
+  </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  var partialPath = "{% url 'catalog:catalog_partial' %}";
+  var indexPath = "{% url 'catalog:index' %}";
+  var suggestPath = "{% url 'catalog:search_suggest' %}";
+
+  function getCookie(name) {
+    var m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return m ? decodeURIComponent(m[2]) : '';
+  }
+
+  function buildIndexUrl(params) {
+    var u = new URL(window.location.origin + indexPath);
+    params.forEach(function (v, k) { u.searchParams.append(k, v); });
+    return u.pathname + u.search;
+  }
+
+  function buildPartialUrl(params) {
+    var u = new URL(window.location.origin + partialPath);
+    params.forEach(function (v, k) { u.searchParams.append(k, v); });
+    return u.toString();
+  }
+
+  function replaceCatalogFromHtml(html) {
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    var next = doc.getElementById('catalog-main');
+    var cur = document.getElementById('catalog-main');
+    if (next && cur) {
+      cur.replaceWith(next);
+      bindCatalogUi();
+      return true;
+    }
+    return false;
+  }
+
+  function syncNavFormFromUrl() {
+    var form = document.getElementById('nav-catalog-search');
+    var navInput = document.getElementById('nav-search-input');
+    if (!form) return;
+    var u = new URL(window.location.href);
+    form.querySelectorAll('input[type="hidden"]').forEach(function (i) { i.remove(); });
+    u.searchParams.forEach(function (v, k) {
+      if (k === 'q') return;
+      var inp = document.createElement('input');
+      inp.type = 'hidden';
+      inp.name = k;
+      inp.value = v;
+      form.appendChild(inp);
+    });
+    var qv = u.searchParams.get('q') || '';
+    if (navInput) navInput.value = qv;
+    var mq = document.getElementById('mq');
+    if (mq) mq.value = qv;
+  }
+
+  function fetchCatalogFromParams(params) {
+    var purl = buildPartialUrl(params);
+    var push = buildIndexUrl(params);
+    return fetch(purl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        if (replaceCatalogFromHtml(html)) {
+          history.pushState({ catalog: true }, '', push);
+          syncNavFormFromUrl();
+        }
+      });
+  }
+
+  window.runCatalogSearch = function () {
+    var form = document.getElementById('nav-catalog-search');
+    if (!document.getElementById('catalog-main')) {
+      if (form) form.submit();
+      return;
+    }
+    if (!form) return;
+    var fd = new FormData(form);
+    var params = new URLSearchParams(fd);
+    fetchCatalogFromParams(params);
+  };
+
+  function bindCatalogUi() {
+    var container = document.getElementById('tools-container');
+    if (container) {
+      var mode = localStorage.getItem('catalog_view') || 'grid';
+      container.classList.toggle('view-list', mode === 'list');
+      container.classList.toggle('view-grid', mode !== 'list');
+    }
+    var g = document.querySelector('.js-view-grid');
+    var l = document.querySelector('.js-view-list');
+    if (g) g.onclick = function () {
+      localStorage.setItem('catalog_view', 'grid');
+      if (container) { container.classList.remove('view-list'); container.classList.add('view-grid'); }
+    };
+    if (l) l.onclick = function () {
+      localStorage.setItem('catalog_view', 'list');
+      if (container) { container.classList.add('view-list'); container.classList.remove('view-grid'); }
+    };
+  }
+
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('a.js-catalog-nav');
+    if (!a || !document.getElementById('catalog-main')) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || a.target === '_blank') return;
+    e.preventDefault();
+    var u = new URL(a.href, window.location.origin);
+    if (u.origin !== window.location.origin) return;
+    var params = u.searchParams;
+    fetchCatalogFromParams(params);
+  });
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('.js-tool-preview');
+    if (!btn) return;
+    e.preventDefault();
+    var url = btn.getAttribute('data-preview-url');
+    if (!url) return;
+    var body = document.getElementById('toolPreviewModalBody');
+    if (!body) return;
+    body.innerHTML = '<p class="text-muted small mb-0">Loading…</p>';
+    var el = document.getElementById('toolPreviewModal');
+    if (!el || !window.bootstrap) return;
+    var modal = bootstrap.Modal.getOrCreateInstance(el);
+    modal.show();
+    fetch(url).then(function (r) { return r.text(); }).then(function (html) {
+      body.innerHTML = html;
+    });
+  });
+
+  var navInput = document.getElementById('nav-search-input');
+  var suggestBox = document.getElementById('search-suggest');
+  var tmr;
+  if (navInput && suggestBox) {
+    function esc(s) {
+      if (s == null || s === '') return '';
+      var d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+    function renderSuggest(items) {
+      if (!items || !items.length) {
+        suggestBox.classList.add('d-none');
+        suggestBox.innerHTML = '';
+        return;
+      }
+      suggestBox.innerHTML = items.map(function (it) {
+        var u = it.url || '';
+        if (!u || u.charAt(0) !== '/') u = '#';
+        return '<a class="search-suggest-item" href="' + u.replace(/"/g, '') + '"><span class="fw-medium">' + esc(it.name) + '</span>'
+          + (it.type ? '<span class="small text-muted ms-1">' + esc(it.type) + '</span>' : '')
+          + '<span class="small text-muted d-block text-truncate">' + esc(it.snippet || '') + '</span></a>';
+      }).join('');
+      suggestBox.classList.remove('d-none');
+    }
+    var catDebounce;
+    navInput.addEventListener('input', function () {
+      clearTimeout(tmr);
+      var q = navInput.value.trim();
+      if (q.length < 2) {
+        suggestBox.classList.add('d-none');
+        suggestBox.innerHTML = '';
+      } else {
+        tmr = setTimeout(function () {
+          fetch(suggestPath + '?q=' + encodeURIComponent(q))
+            .then(function (r) { return r.json(); })
+            .then(function (data) { renderSuggest(data.results || []); });
+        }, 220);
+      }
+      clearTimeout(catDebounce);
+      if (document.getElementById('catalog-main')) {
+        catDebounce = setTimeout(window.runCatalogSearch, 380);
+      }
+    });
+    document.addEventListener('click', function (e) {
+      if (!suggestBox.contains(e.target) && e.target !== navInput) {
+        suggestBox.classList.add('d-none');
+      }
+    });
+    navInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        window.runCatalogSearch();
+        suggestBox.classList.add('d-none');
+      }
+    });
+  }
+
+  var mq = document.getElementById('mq');
+  if (mq && document.getElementById('catalog-main')) {
+    var deb2;
+    mq.addEventListener('input', function () {
+      clearTimeout(deb2);
+      deb2 = setTimeout(function () {
+        var nav = document.getElementById('nav-search-input');
+        if (nav) nav.value = mq.value;
+        window.runCatalogSearch();
+      }, 380);
+    });
+  }
+
+  window.addEventListener('popstate', function () {
+    if (!document.getElementById('catalog-main')) return;
+    var u = new URL(window.location.href);
+    if (u.pathname.replace(/\/$/, '') !== indexPath.replace(/\/$/, '')) return;
+    var purl = new URL(window.location.origin + partialPath);
+    purl.search = u.search;
+    fetch(purl.toString(), { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        if (replaceCatalogFromHtml(html)) syncNavFormFromUrl();
+      });
+  });
+
+  document.querySelectorAll('.js-assistant-prompt').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var q = btn.getAttribute('data-q') || '';
+      var params = new URLSearchParams();
+      if (q) params.set('q', q);
+      var nav = document.getElementById('nav-search-input');
+      if (nav) nav.value = q;
+      var mqEl = document.getElementById('mq');
+      if (mqEl) mqEl.value = q;
+      if (document.getElementById('catalog-main')) {
+        fetchCatalogFromParams(params);
+      } else {
+        window.location.href = indexPath + (q ? ('?q=' + encodeURIComponent(q)) : '');
+      }
+    });
+  });
+
+  bindCatalogUi();
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "catalog/saas_app.html" %}
+
+{% block title %}Tutorials — Digital Library{% endblock %}
+
+{% block app_body %}
+<main class="max-w-app py-4 pb-5 mx-auto px-3">
+  <p class="section-kicker mb-2">Learning</p>
+  <h1 class="hero-title mb-2" style="font-size:2rem;">Tutorials</h1>
+  <p class="text-muted mb-4" style="max-width:40rem;">Resources linked to catalog tools (seeded overview links; extend in admin).</p>
+  <div class="vstack gap-3">
+    {% for tut in tutorials %}
+      <article class="card-glass p-4">
+        <div class="d-flex flex-wrap justify-content-between gap-2 mb-2">
+          <h2 class="h6 fw-semibold mb-0">{{ tut.title }}</h2>
+          <a class="small fw-medium" href="{{ tut.tool.get_absolute_url }}">{{ tut.tool.name }} →</a>
+        </div>
+        {% if tut.description %}<p class="small text-muted mb-2">{{ tut.description }}</p>{% endif %}
+        <a href="{{ tut.link }}" class="btn-ghost small" target="_blank" rel="noopener noreferrer">Open tutorial link →</a>
+      </article>
+    {% empty %}
+      <p class="text-muted">No tutorials yet. Run the seed command to attach default entries.</p>
+    {% endfor %}
+  </div>
+</main>
+{% endblock %}

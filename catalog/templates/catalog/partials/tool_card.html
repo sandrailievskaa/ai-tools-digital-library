@@ -1,0 +1,43 @@
+{% load catalog_tags %}
+<article class="card-glass h-100 overflow-hidden d-flex flex-column tool-card-interactive">
+  <div class="tool-thumb flex-shrink-0">
+    {% with purl=tool|preview_url %}
+      <div class="tool-thumb-fallback position-absolute w-100 h-100">{{ tool.name|first_word|slice:":2"|upper }}</div>
+      {% if purl %}
+        <img class="position-absolute top-0 start-0 w-100 h-100" style="z-index:1;object-fit:cover" src="{{ purl }}" alt="" loading="lazy" onerror="this.remove()">
+      {% endif %}
+    {% endwith %}
+    {% if tool.ai_type %}
+      <span class="badge-type">{{ tool.ai_type.name }}</span>
+    {% endif %}
+    <form method="post" action="{% url 'catalog:toggle_favorite' tool.pk %}" class="position-absolute top-0 end-0 m-2">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <button type="submit" class="icon-btn p-0 border-0" style="width:2rem;height:2rem;background:rgba(255,255,255,0.9);" title="Favorite">
+        {% if tool.pk in favorite_ids %}♥{% else %}♡{% endif %}
+      </button>
+    </form>
+  </div>
+  <div class="p-3 flex-grow-1 d-flex flex-column">
+    <a href="{{ tool.get_absolute_url }}" class="text-decoration-none text-reset">
+      <h3 class="h6 fw-semibold mb-1" style="letter-spacing:-0.02em;">{% if search_q %}{{ tool.name|highlight:search_q }}{% else %}{{ tool.name }}{% endif %}</h3>
+      {% if tool.category %}
+        <span class="pill pill-sky mb-2 d-inline-block">{{ tool.category.name }}</span>
+      {% endif %}
+      <p class="small text-muted line-clamp-2 mb-2">{% if search_q %}{{ tool.description|highlight:search_q }}{% else %}{{ tool.description }}{% endif %}</p>
+    </a>
+    <div class="mb-2">
+      {% for tag in tool.tags.all|slice:":4" %}
+        <a class="tag-chip" href="{% url 'catalog:index' %}{% toggle_list_param 'tag' tag.slug %}">{{ tag.name }}</a>
+      {% endfor %}
+    </div>
+    <div class="mt-auto d-flex justify-content-between align-items-center pt-2 border-top" style="border-color:var(--border)!important;">
+      <span class="pill-muted" style="font-size:0.7rem;">{{ tool.difficulty }}</span>
+      <span class="small text-muted">★ {{ tool.popularity_score|floatformat:0 }}</span>
+    </div>
+    <div class="d-flex gap-2 mt-2">
+      <button type="button" class="btn-ghost flex-grow-1 small py-2 js-tool-preview" data-preview-url="{% url 'catalog:tool_preview' tool.slug %}">Preview</button>
+      <a href="{{ tool.get_absolute_url }}" class="btn-primary-saas flex-grow-1 text-center small py-2">Details</a>
+    </div>
+  </div>
+</article>

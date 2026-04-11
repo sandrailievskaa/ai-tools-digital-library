@@ -1,0 +1,105 @@
+{% extends "catalog/saas_app.html" %}
+{% load static %}
+
+{% block title %}Dashboard — Digital Library{% endblock %}
+
+{% block app_body %}
+<main class="flex-grow-1 max-w-app py-4 pb-5 mx-auto px-3">
+  <p class="section-kicker mb-2">Analytics</p>
+  <h1 class="hero-title mb-2" style="font-size:2rem;">Library insights</h1>
+  <p class="text-muted mb-4" style="max-width:40rem;">Distribution of digital objects by category, type, and difficulty, plus mock popularity ranking.</p>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="stat-tile h-100"><div class="stat-value text-gradient">{{ total_tools }}</div><div class="small text-muted">Total tools</div></div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-tile h-100"><div class="stat-value">{{ total_tags }}</div><div class="small text-muted">Unique tags</div></div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-tile h-100"><div class="stat-value">{{ favorite_count }}</div><div class="small text-muted">Your favorites</div></div>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-5">
+    <div class="col-lg-4">
+      <h2 class="h6 fw-semibold mb-3">Objects per category</h2>
+      <div class="chart-box">
+        <canvas id="chartCategories"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <h2 class="h6 fw-semibold mb-3">Objects per tool type</h2>
+      <div class="chart-box">
+        <canvas id="chartTypes"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <h2 class="h6 fw-semibold mb-3">Difficulty mix</h2>
+      <div class="chart-box">
+        <canvas id="chartDifficulty"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="h6 fw-semibold mb-3">Most popular (mock engagement)</h2>
+  <div class="row g-3">
+    {% for tool in popular_tools %}
+      <div class="col-md-6 col-xl-3">
+        {% include "catalog/partials/tool_card.html" with tool=tool favorite_ids=favorite_ids %}
+      </div>
+    {% endfor %}
+  </div>
+</main>
+
+{{ cat_labels|json_script:"data-cat-labels" }}
+{{ cat_counts|json_script:"data-cat-counts" }}
+{{ type_labels|json_script:"data-type-labels" }}
+{{ type_counts|json_script:"data-type-counts" }}
+{{ diff_labels|json_script:"data-diff-labels" }}
+{{ diff_counts|json_script:"data-diff-counts" }}
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+<script>
+(function () {
+  var sky = '#38bdf8';
+  var purple = '#a78bfa';
+  var muted = 'rgba(148, 163, 184, 0.35)';
+  var catLabels = JSON.parse(document.getElementById('data-cat-labels').textContent);
+  var catCounts = JSON.parse(document.getElementById('data-cat-counts').textContent);
+  var typeLabels = JSON.parse(document.getElementById('data-type-labels').textContent);
+  var typeCounts = JSON.parse(document.getElementById('data-type-counts').textContent);
+  var diffLabels = JSON.parse(document.getElementById('data-diff-labels').textContent);
+  var diffCounts = JSON.parse(document.getElementById('data-diff-counts').textContent);
+
+  function doughnut(ctx, labels, data) {
+    return new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: data,
+          backgroundColor: [sky, purple, 'rgba(56,189,248,0.45)', 'rgba(167,139,250,0.45)', 'rgba(15,23,42,0.15)', 'rgba(56,189,248,0.25)', 'rgba(167,139,250,0.25)', 'rgba(15,23,42,0.25)'],
+          borderColor: muted,
+          borderWidth: 1,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } }
+      }
+    });
+  }
+
+  var el1 = document.getElementById('chartCategories');
+  var el2 = document.getElementById('chartTypes');
+  var el3 = document.getElementById('chartDifficulty');
+  if (el1 && catLabels.length) doughnut(el1.getContext('2d'), catLabels, catCounts);
+  if (el2 && typeLabels.length) doughnut(el2.getContext('2d'), typeLabels, typeCounts);
+  if (el3 && diffLabels.length) doughnut(el3.getContext('2d'), diffLabels, diffCounts);
+})();
+</script>
+{% endblock %}
