@@ -17,7 +17,7 @@ Open http://127.0.0.1:8000/ — dashboard at `/dashboard/`.
 
 ## Data
 
-Seed JSON: `catalog/data/ai_tools_seed.json`. Optional preview files: `static/catalog/previews/` (e.g. `figma.png`); cards fall back to initials if missing.
+Seed JSON: `catalog/data/ai_tools_seed.json`. Optional preview files: `static/catalog/previews/`; cards fall back to initials if missing.
 
 ## Admin
 
@@ -27,6 +27,10 @@ python manage.py createsuperuser
 
 http://127.0.0.1:8000/admin/ — manage `Category`, `AIType`, `Tag`, `AITool`, `SearchIndex`.
 
+Username: admin
+Email address: admin@yahoo.com
+Password: admin123
+
 ## Stack
 
-Django 5, SQLite, Bootstrap 5 (grid + collapse), custom `saas.css`, Chart.js (CDN).
+Django 5, SQLite, Bootstrap 5, custom `saas.css`, Chart.js (CDN).

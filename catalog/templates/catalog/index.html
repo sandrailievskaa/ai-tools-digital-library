@@ -7,9 +7,22 @@
 <main class="flex-grow-1 catalog-page">
   {% if show_hero %}
   <section class="max-w-app py-5 py-lg-5 mx-auto px-3">
+    <div class="hero-enhanced">
+      <div class="hero-pattern" aria-hidden="true"></div>
+      <div class="hero-glow hero-glow-a" aria-hidden="true"></div>
+      <div class="hero-glow hero-glow-b" aria-hidden="true"></div>
+      <div class="hero-float-layer" aria-hidden="true">
+        <span class="hero-float-icon hero-float-1">{% include "catalog/partials/hero_icon_svg.html" with icon="spark" %}</span>
+        <span class="hero-float-icon hero-float-2">{% include "catalog/partials/hero_icon_svg.html" with icon="chip" %}</span>
+        <span class="hero-float-icon hero-float-3">{% include "catalog/partials/hero_icon_svg.html" with icon="wand" %}</span>
+        <span class="hero-float-icon hero-float-4">{% include "catalog/partials/hero_icon_svg.html" with icon="image" %}</span>
+        <span class="hero-float-icon hero-float-5">{% include "catalog/partials/hero_icon_svg.html" with icon="chat" %}</span>
+        <span class="hero-float-icon hero-float-6">{% include "catalog/partials/hero_icon_svg.html" with icon="code" %}</span>
+      </div>
+      <div class="hero-content">
     <p class="section-kicker mb-2">Metadata · Classification · Retrieval</p>
     <h1 class="hero-title">Digital library of <span class="text-gradient">AI tools</span> &amp; tutorials</h1>
-    <p class="text-muted lead mb-4" style="max-width:36rem;font-size:1.05rem;">
+    <p class="text-muted lead mb-4 hero-lead" style="max-width:36rem;font-size:1.05rem;">
       Curated digital objects with structured metadata, faceted filters, and a lightweight search index—mirroring how real digital libraries organize knowledge.
     </p>
     <div class="d-flex flex-wrap gap-2 mb-5">
@@ -57,246 +70,15 @@
     {% endif %}
 
     <hr class="opacity-25 my-5">
+      </div>
+    </div>
   </section>
   {% endif %}
+
+  {% include "catalog/partials/recent_strip.html" %}
 
   <div class="max-w-app pb-5 mx-auto px-3">
     {% include "catalog/partials/catalog_main.html" %}
   </div>
 </main>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-(function () {
-  var partialPath = "{% url 'catalog:catalog_partial' %}";
-  var indexPath = "{% url 'catalog:index' %}";
-  var suggestPath = "{% url 'catalog:search_suggest' %}";
-
-  function getCookie(name) {
-    var m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-    return m ? decodeURIComponent(m[2]) : '';
-  }
-
-  function buildIndexUrl(params) {
-    var u = new URL(window.location.origin + indexPath);
-    params.forEach(function (v, k) { u.searchParams.append(k, v); });
-    return u.pathname + u.search;
-  }
-
-  function buildPartialUrl(params) {
-    var u = new URL(window.location.origin + partialPath);
-    params.forEach(function (v, k) { u.searchParams.append(k, v); });
-    return u.toString();
-  }
-
-  function replaceCatalogFromHtml(html) {
-    var doc = new DOMParser().parseFromString(html, 'text/html');
-    var next = doc.getElementById('catalog-main');
-    var cur = document.getElementById('catalog-main');
-    if (next && cur) {
-      cur.replaceWith(next);
-      bindCatalogUi();
-      return true;
-    }
-    return false;
-  }
-
-  function syncNavFormFromUrl() {
-    var form = document.getElementById('nav-catalog-search');
-    var navInput = document.getElementById('nav-search-input');
-    if (!form) return;
-    var u = new URL(window.location.href);
-    form.querySelectorAll('input[type="hidden"]').forEach(function (i) { i.remove(); });
-    u.searchParams.forEach(function (v, k) {
-      if (k === 'q') return;
-      var inp = document.createElement('input');
-      inp.type = 'hidden';
-      inp.name = k;
-      inp.value = v;
-      form.appendChild(inp);
-    });
-    var qv = u.searchParams.get('q') || '';
-    if (navInput) navInput.value = qv;
-    var mq = document.getElementById('mq');
-    if (mq) mq.value = qv;
-  }
-
-  function fetchCatalogFromParams(params) {
-    var purl = buildPartialUrl(params);
-    var push = buildIndexUrl(params);
-    return fetch(purl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-      .then(function (r) { return r.text(); })
-      .then(function (html) {
-        if (replaceCatalogFromHtml(html)) {
-          history.pushState({ catalog: true }, '', push);
-          syncNavFormFromUrl();
-        }
-      });
-  }
-
-  window.runCatalogSearch = function () {
-    var form = document.getElementById('nav-catalog-search');
-    if (!document.getElementById('catalog-main')) {
-      if (form) form.submit();
-      return;
-    }
-    if (!form) return;
-    var fd = new FormData(form);
-    var params = new URLSearchParams(fd);
-    fetchCatalogFromParams(params);
-  };
-
-  function bindCatalogUi() {
-    var container = document.getElementById('tools-container');
-    if (container) {
-      var mode = localStorage.getItem('catalog_view') || 'grid';
-      container.classList.toggle('view-list', mode === 'list');
-      container.classList.toggle('view-grid', mode !== 'list');
-    }
-    var g = document.querySelector('.js-view-grid');
-    var l = document.querySelector('.js-view-list');
-    if (g) g.onclick = function () {
-      localStorage.setItem('catalog_view', 'grid');
-      if (container) { container.classList.remove('view-list'); container.classList.add('view-grid'); }
-    };
-    if (l) l.onclick = function () {
-      localStorage.setItem('catalog_view', 'list');
-      if (container) { container.classList.add('view-list'); container.classList.remove('view-grid'); }
-    };
-  }
-
-  document.addEventListener('click', function (e) {
-    var a = e.target.closest('a.js-catalog-nav');
-    if (!a || !document.getElementById('catalog-main')) return;
-    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || a.target === '_blank') return;
-    e.preventDefault();
-    var u = new URL(a.href, window.location.origin);
-    if (u.origin !== window.location.origin) return;
-    var params = u.searchParams;
-    fetchCatalogFromParams(params);
-  });
-
-  document.addEventListener('click', function (e) {
-    var btn = e.target.closest('.js-tool-preview');
-    if (!btn) return;
-    e.preventDefault();
-    var url = btn.getAttribute('data-preview-url');
-    if (!url) return;
-    var body = document.getElementById('toolPreviewModalBody');
-    if (!body) return;
-    body.innerHTML = '<p class="text-muted small mb-0">Loading…</p>';
-    var el = document.getElementById('toolPreviewModal');
-    if (!el || !window.bootstrap) return;
-    var modal = bootstrap.Modal.getOrCreateInstance(el);
-    modal.show();
-    fetch(url).then(function (r) { return r.text(); }).then(function (html) {
-      body.innerHTML = html;
-    });
-  });
-
-  var navInput = document.getElementById('nav-search-input');
-  var suggestBox = document.getElementById('search-suggest');
-  var tmr;
-  if (navInput && suggestBox) {
-    function esc(s) {
-      if (s == null || s === '') return '';
-      var d = document.createElement('div');
-      d.textContent = s;
-      return d.innerHTML;
-    }
-    function renderSuggest(items) {
-      if (!items || !items.length) {
-        suggestBox.classList.add('d-none');
-        suggestBox.innerHTML = '';
-        return;
-      }
-      suggestBox.innerHTML = items.map(function (it) {
-        var u = it.url || '';
-        if (!u || u.charAt(0) !== '/') u = '#';
-        return '<a class="search-suggest-item" href="' + u.replace(/"/g, '') + '"><span class="fw-medium">' + esc(it.name) + '</span>'
-          + (it.type ? '<span class="small text-muted ms-1">' + esc(it.type) + '</span>' : '')
-          + '<span class="small text-muted d-block text-truncate">' + esc(it.snippet || '') + '</span></a>';
-      }).join('');
-      suggestBox.classList.remove('d-none');
-    }
-    var catDebounce;
-    navInput.addEventListener('input', function () {
-      clearTimeout(tmr);
-      var q = navInput.value.trim();
-      if (q.length < 2) {
-        suggestBox.classList.add('d-none');
-        suggestBox.innerHTML = '';
-      } else {
-        tmr = setTimeout(function () {
-          fetch(suggestPath + '?q=' + encodeURIComponent(q))
-            .then(function (r) { return r.json(); })
-            .then(function (data) { renderSuggest(data.results || []); });
-        }, 220);
-      }
-      clearTimeout(catDebounce);
-      if (document.getElementById('catalog-main')) {
-        catDebounce = setTimeout(window.runCatalogSearch, 380);
-      }
-    });
-    document.addEventListener('click', function (e) {
-      if (!suggestBox.contains(e.target) && e.target !== navInput) {
-        suggestBox.classList.add('d-none');
-      }
-    });
-    navInput.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        window.runCatalogSearch();
-        suggestBox.classList.add('d-none');
-      }
-    });
-  }
-
-  var mq = document.getElementById('mq');
-  if (mq && document.getElementById('catalog-main')) {
-    var deb2;
-    mq.addEventListener('input', function () {
-      clearTimeout(deb2);
-      deb2 = setTimeout(function () {
-        var nav = document.getElementById('nav-search-input');
-        if (nav) nav.value = mq.value;
-        window.runCatalogSearch();
-      }, 380);
-    });
-  }
-
-  window.addEventListener('popstate', function () {
-    if (!document.getElementById('catalog-main')) return;
-    var u = new URL(window.location.href);
-    if (u.pathname.replace(/\/$/, '') !== indexPath.replace(/\/$/, '')) return;
-    var purl = new URL(window.location.origin + partialPath);
-    purl.search = u.search;
-    fetch(purl.toString(), { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-      .then(function (r) { return r.text(); })
-      .then(function (html) {
-        if (replaceCatalogFromHtml(html)) syncNavFormFromUrl();
-      });
-  });
-
-  document.querySelectorAll('.js-assistant-prompt').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var q = btn.getAttribute('data-q') || '';
-      var params = new URLSearchParams();
-      if (q) params.set('q', q);
-      var nav = document.getElementById('nav-search-input');
-      if (nav) nav.value = q;
-      var mqEl = document.getElementById('mq');
-      if (mqEl) mqEl.value = q;
-      if (document.getElementById('catalog-main')) {
-        fetchCatalogFromParams(params);
-      } else {
-        window.location.href = indexPath + (q ? ('?q=' + encodeURIComponent(q)) : '');
-      }
-    });
-  });
-
-  bindCatalogUi();
-})();
-</script>
 {% endblock %}

@@ -31,6 +31,12 @@
 
 {{ favorite_slugs|json_script:"fav-slugs-data" }}
 
+<div id="app-config" class="d-none" hidden
+  data-catalog-index="{% url 'catalog:index' %}"
+  data-catalog-partial="{% url 'catalog:catalog_partial' %}"
+  data-search-suggest="{% url 'catalog:search_suggest' %}"></div>
+<script src="{% static 'catalog/js/catalog-shell.js' %}"></script>
+
 <script>
 (function () {
   function getCookie(name) {

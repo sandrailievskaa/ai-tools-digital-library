@@ -17,7 +17,7 @@
       </a>
       <a class="app-sidebar-link js-catalog-nav {% if request.GET.favorites %}active{% endif %}" href="{% url 'catalog:index' %}?favorites=1">
         <span class="app-sidebar-ico">♥</span> Favorites
-        {% if favorite_count %}<span class="app-sidebar-badge">{{ favorite_count }}</span>{% endif %}
+        <span class="app-sidebar-badge js-fav-count-badge{% if not favorite_count %} d-none{% endif %}">{{ favorite_count|default:0 }}</span>
       </a>
       <a class="app-sidebar-link {% if request.resolver_match.url_name == 'tutorials' %}active{% endif %}" href="{% url 'catalog:tutorials' %}">
         <span class="app-sidebar-ico">▣</span> Tutorials
@@ -26,12 +26,11 @@
         <span class="app-sidebar-ico">▤</span> Analytics
       </a>
     </nav>
-    <div class="app-sidebar-panel mt-auto">
-      <div class="small fw-semibold text-muted mb-2">Assistant</div>
-      <p class="small text-muted mb-2">Quick prompts filter the catalog without leaving the page.</p>
-      <button type="button" class="btn-ghost w-100 text-start small mb-1 js-assistant-prompt" data-q="UI design">Suggest tools for UI design</button>
-      <button type="button" class="btn-ghost w-100 text-start small mb-1 js-assistant-prompt" data-q="video generation">Video &amp; media AI</button>
-      <button type="button" class="btn-ghost w-100 text-start small js-assistant-prompt" data-q="productivity writing">Productivity &amp; writing</button>
+
+    <div class="recent-viewed-panel">
+      <div class="recent-viewed-head">Recently viewed</div>
+      <ul class="recent-viewed-list" id="recent-tools-list" aria-label="Recently viewed tools"></ul>
+      <p class="recent-viewed-empty small text-muted mb-0" id="recent-tools-empty">Open a tool page to build your trail.</p>
     </div>
   </div>
 </aside>

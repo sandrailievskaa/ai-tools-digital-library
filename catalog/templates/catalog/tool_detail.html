@@ -5,6 +5,7 @@
 
 {% block app_body %}
 <main class="flex-grow-1 max-w-app py-4 pb-5 mx-auto px-3">
+  <div id="tool-page-meta" class="d-none" hidden data-slug="{{ tool.slug }}" data-name="{{ tool.name }}" data-url="{{ tool.get_absolute_url }}"></div>
   <a href="{% url 'catalog:index' %}" class="small text-muted text-decoration-none d-inline-flex align-items-center gap-1 mb-4">← Back to catalog</a>
 
   <div class="row g-4 g-lg-5 align-items-start">
@@ -19,10 +20,10 @@
         <h1 class="hero-title mb-3" style="font-size:clamp(1.75rem,3vw,2.25rem);">{{ tool.name }}</h1>
         <p class="lead text-muted mb-0">{{ tool.description }}</p>
         <div class="d-flex flex-wrap gap-2 mt-4">
-          <form method="post" action="{% url 'catalog:toggle_favorite' tool.pk %}">
+          <form method="post" action="{% url 'catalog:toggle_favorite' tool.pk %}" class="js-fav-form">
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ request.get_full_path }}">
-            <button type="submit" class="btn-ghost">{% if is_favorite %}♥ Saved{% else %}♡ Add to favorites{% endif %}</button>
+            <button type="submit" class="btn-ghost js-detail-fav-btn{% if is_favorite %} is-favorite{% endif %}">{% if is_favorite %}♥ Saved{% else %}♡ Add to favorites{% endif %}</button>
           </form>
           {% if tool.link %}
             <a class="btn-primary-saas" href="{{ tool.link }}" target="_blank" rel="noopener noreferrer">Open website →</a>

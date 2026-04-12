@@ -246,9 +246,17 @@ def toggle_favorite(request, pk):
     sk = _session_key(request)
     tool = get_object_or_404(AITool, pk=pk)
     deleted, _ = Bookmark.objects.filter(session_key=sk, tool=tool).delete()
+    is_favorite = False
     if not deleted:
         Bookmark.objects.get_or_create(session_key=sk, tool=tool)
+        is_favorite = True
     request.session.modified = True
+    count = Bookmark.objects.filter(session_key=sk).count()
+
+    wants_json = request.headers.get("X-Requested-With") == "XMLHttpRequest" or request.POST.get("format") == "json"
+    if wants_json:
+        return JsonResponse({"ok": True, "is_favorite": is_favorite, "favorite_count": count})
+
     return redirect(next_url)
 
 
@@ -291,6 +299,12 @@ def dashboard(request):
     )
     diff_data = list(AITool.objects.values("difficulty").annotate(n=Count("id")).order_by("difficulty"))
     popular = list(_base_queryset().order_by("-popularity_score")[:8])
+    trending = list(_base_queryset().order_by("-created_at", "-popularity_score")[:8])
+    most_bookmarked = list(
+        _base_queryset()
+        .annotate(bookmark_n=Count("bookmark_entries"))
+        .order_by("-bookmark_n", "-popularity_score")[:8]
+    )
     total_tools = AITool.objects.count()
     total_tags = Tag.objects.filter(tools__isnull=False).distinct().count()
 
@@ -303,6 +317,8 @@ def dashboard(request):
         "diff_labels": [d["difficulty"] for d in diff_data],
         "diff_counts": [d["n"] for d in diff_data],
         "popular_tools": popular,
+        "trending_tools": trending,
+        "most_bookmarked_tools": most_bookmarked,
         "total_tools": total_tools,
         "total_tags": total_tags,
         "favorite_count": len(fav),
