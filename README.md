@@ -30,7 +30,9 @@ Open http://127.0.0.1:8000/ — charts at http://127.0.0.1:8000/dashboard/
 python manage.py createsuperuser
 ```
 Username: admin
+
 Email address: admin@yahoo.com
+
 Password: admin123
 
 http://127.0.0.1:8000/admin/ — manage `Category`, `AIType`, `Tag`, `AITool`, `SearchIndex`.
