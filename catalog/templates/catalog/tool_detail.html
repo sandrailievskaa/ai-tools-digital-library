@@ -1,7 +1,7 @@
 {% extends "catalog/saas_app.html" %}
 {% load catalog_tags %}
 
-{% block title %}{{ tool.name }} — Digital Library{% endblock %}
+{% block title %}{{ tool.name }}{% endblock %}
 
 {% block app_body %}
 <main class="flex-grow-1 max-w-app py-4 pb-5 mx-auto px-3">
@@ -76,11 +76,11 @@
           {% endif %}
         {% endwith %}
         <div class="text-start small">
-          <div class="section-kicker mb-2">Structured metadata</div>
+          <div class="section-kicker mb-2">Details</div>
           <ul class="list-unstyled text-muted mb-0">
             <li class="mb-2"><strong class="text-reset">Slug:</strong> {{ tool.slug }}</li>
-            <li class="mb-2"><strong class="text-reset">Popularity (mock):</strong> {{ tool.popularity_score|floatformat:1 }}</li>
-            <li class="mb-2"><strong class="text-reset">Indexed:</strong> {% if tool.is_indexed %}yes{% else %}pending{% endif %}</li>
+            <li class="mb-2"><strong class="text-reset">Popularity score:</strong> {{ tool.popularity_score|floatformat:1 }}</li>
+            <li class="mb-2"><strong class="text-reset">In search:</strong> {% if tool.is_indexed %}yes{% else %}no{% endif %}</li>
             <li><strong class="text-reset">Added:</strong> {{ tool.created_at|date:"M j, Y" }}</li>
           </ul>
         </div>
@@ -88,7 +88,7 @@
 
       {% if tool.metadata_json %}
       <div class="card-glass p-4">
-        <h3 class="h6 fw-semibold mb-2">Source record (JSON)</h3>
+        <h3 class="h6 fw-semibold mb-2">Extra fields (JSON)</h3>
         <pre class="small text-muted mb-0 p-3 rounded-3 overflow-auto" style="max-height:200px;background:var(--surface-solid);border:1px solid var(--border);font-size:0.7rem;">{{ tool.metadata_json|json_pp }}</pre>
       </div>
       {% endif %}

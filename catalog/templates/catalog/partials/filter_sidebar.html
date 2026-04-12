@@ -1,6 +1,6 @@
 {% load catalog_tags %}
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <span class="section-kicker">Facets</span>
+  <span class="section-kicker">Filters</span>
   {% if has_active_filters %}
     <a class="small fw-medium js-catalog-nav" href="{% url 'catalog:index' %}">Reset</a>
   {% endif %}
@@ -42,7 +42,3 @@
   </div>
 </div>
 
-<div class="rounded-3 p-3 small" style="border:1px solid var(--border);background:var(--surface-solid);">
-  <strong class="d-block mb-1" style="color:var(--sky);">Digital library model</strong>
-  <span class="text-muted">Metadata-driven records, controlled vocabulary, faceted filters, and a search index for retrieval.</span>
-</div>

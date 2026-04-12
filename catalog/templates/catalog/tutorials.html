@@ -1,12 +1,12 @@
 {% extends "catalog/saas_app.html" %}
 
-{% block title %}Tutorials — Digital Library{% endblock %}
+{% block title %}Tutorials{% endblock %}
 
 {% block app_body %}
 <main class="max-w-app py-4 pb-5 mx-auto px-3">
   <p class="section-kicker mb-2">Learning</p>
   <h1 class="hero-title mb-2" style="font-size:2rem;">Tutorials</h1>
-  <p class="text-muted mb-4" style="max-width:40rem;">Resources linked to catalog tools (seeded overview links; extend in admin).</p>
+  <p class="text-muted mb-4" style="max-width:40rem;">External links tied to tools in the list. Add or edit rows in the admin.</p>
   <div class="vstack gap-3">
     {% for tut in tutorials %}
       <article class="card-glass p-4">

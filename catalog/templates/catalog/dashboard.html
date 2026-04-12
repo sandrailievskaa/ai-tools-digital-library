@@ -1,29 +1,29 @@
 {% extends "catalog/saas_app.html" %}
 {% load static %}
 
-{% block title %}Dashboard — Digital Library{% endblock %}
+{% block title %}Dashboard — Digital library of AI tools and tutorials{% endblock %}
 
 {% block app_body %}
 <main class="flex-grow-1 max-w-app py-4 pb-5 mx-auto px-3 dashboard-page">
-  <p class="section-kicker mb-2">Analytics</p>
-  <h1 class="hero-title mb-2" style="font-size:2rem;">Library insights</h1>
-  <p class="text-muted mb-4" style="max-width:40rem;">Live counters, distribution charts, and curated leaderboards — including saves from every session.</p>
+  <p class="section-kicker mb-2">Overview</p>
+  <h1 class="hero-title mb-2" style="font-size:2rem;">Dashboard</h1>
+  <p class="text-muted mb-4" style="max-width:40rem;">Counts, charts, and lists of popular and saved tools.</p>
 
   <div class="row g-3 mb-4">
     <div class="col-md-4">
-      <div class="stat-tile h-100 stat-tile-premium">
-        <div class="stat-value text-gradient js-count-up" data-target="{{ total_tools }}">0</div>
+      <div class="stat-tile h-100">
+        <div class="stat-value js-count-up" data-target="{{ total_tools }}">0</div>
         <div class="small text-muted">Total tools</div>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="stat-tile h-100 stat-tile-premium">
+      <div class="stat-tile h-100">
         <div class="stat-value js-count-up" data-target="{{ total_tags }}">0</div>
         <div class="small text-muted">Unique tags</div>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="stat-tile h-100 stat-tile-premium">
+      <div class="stat-tile h-100">
         <div class="stat-value js-count-up" data-target="{{ favorite_count }}">0</div>
         <div class="small text-muted">Your favorites</div>
       </div>
@@ -32,13 +32,13 @@
 
   <div class="row g-4 mb-5 dashboard-charts-row">
     <div class="col-lg-4">
-      <h2 class="h6 fw-semibold mb-3">Objects per category</h2>
+      <h2 class="h6 fw-semibold mb-3">Tools per category</h2>
       <div class="chart-box">
         <canvas id="chartCategories"></canvas>
       </div>
     </div>
     <div class="col-lg-4">
-      <h2 class="h6 fw-semibold mb-3">Objects per tool type</h2>
+      <h2 class="h6 fw-semibold mb-3">Tools per type</h2>
       <div class="chart-box">
         <canvas id="chartTypes"></canvas>
       </div>
@@ -54,8 +54,8 @@
   <section class="mb-5 dashboard-section-enter">
     <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
       <div>
-        <h2 class="h5 fw-semibold mb-1" style="letter-spacing:-0.02em;">Top trending tools this week</h2>
-        <p class="small text-muted mb-0">New additions and rising momentum in the catalog.</p>
+        <h2 class="h5 fw-semibold mb-1" style="letter-spacing:-0.02em;">Recently added</h2>
+        <p class="small text-muted mb-0">Newest entries first.</p>
       </div>
     </div>
     <div class="row g-3">
@@ -71,7 +71,7 @@
     <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
       <div>
         <h2 class="h5 fw-semibold mb-1" style="letter-spacing:-0.02em;">Most bookmarked tools</h2>
-        <p class="small text-muted mb-0">What readers save most often — all sessions combined.</p>
+        <p class="small text-muted mb-0">Tools saved most often (all visitors).</p>
       </div>
     </div>
     <div class="row g-3">
@@ -87,7 +87,7 @@
   </section>
 
   <section class="dashboard-section-enter">
-    <h2 class="h6 fw-semibold mb-3">Most popular (engagement score)</h2>
+    <h2 class="h6 fw-semibold mb-3">Highest popularity score</h2>
     <div class="row g-3">
       {% for tool in popular_tools %}
         <div class="col-md-6 col-xl-3 dashboard-tool-slot">

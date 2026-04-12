@@ -1,6 +1,6 @@
 {% load catalog_tags %}
 <div id="catalog-main" data-partial-url="{% url 'catalog:catalog_partial' %}">
-  <button class="btn btn-outline-secondary w-100 d-lg-none mb-3 rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#filtersSidebar">Filters &amp; facets</button>
+  <button class="btn btn-outline-secondary w-100 d-lg-none mb-3 rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#filtersSidebar">Show filters</button>
 
   <div class="row g-4">
     <aside class="col-lg-3 catalog-facets-col">
@@ -13,7 +13,7 @@
     <div class="col-lg-9 catalog-results-col">
       {% if has_active_filters %}
       <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-        <span class="small text-muted fw-medium">Active facets:</span>
+        <span class="small text-muted fw-medium">Active filters:</span>
         {% if search_q %}
           <a class="filter-chip filter-chip-active js-catalog-nav" href="{% url 'catalog:index' %}{% without_keys 'q' %}">“{{ search_q }}” ✕</a>
         {% endif %}

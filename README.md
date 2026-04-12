@@ -1,6 +1,6 @@
-# Digital Library of AI Tools & Tutorials
+# Digital library of AI tools and tutorials
 
-Django digital-library app: curated **AI tools** with structured metadata, faceted filters, session **favorites**, a **SearchIndex** layer, and a small **dashboard** (Chart.js). UI targets a modern SaaS look (Notion / Vercel / Linear) with light/dark mode.
+A small catalog site: browse tools, filter by category/type/tags, search, save favorites, and see simple charts on the dashboard.
 
 ## Setup
 
@@ -13,23 +13,37 @@ python manage.py seed_ai_library
 python manage.py runserver
 ```
 
-Open http://127.0.0.1:8000/ — dashboard at `/dashboard/`.
+Open http://127.0.0.1:8000/ — charts at http://127.0.0.1:8000/dashboard/
 
-## Data
+## Project layout
 
-Seed JSON: `catalog/data/ai_tools_seed.json`. Optional preview files: `static/catalog/previews/`; cards fall back to initials if missing.
+- `config/` — Django settings and root URLs  
+- `catalog/` — app: `models.py`, `views.py`, `urls.py`, `admin.py`  
+- `catalog/services/` — catalog filters/search context and session favorites (keeps views thin)  
+- `catalog/templates/` — pages and partials  
+- `static/catalog/` — CSS, JS, optional preview images  
+- `catalog/data/ai_tools_seed.json` — seed data for `seed_ai_library`
 
 ## Admin
 
 ```bash
 python manage.py createsuperuser
 ```
-
-http://127.0.0.1:8000/admin/ — manage `Category`, `AIType`, `Tag`, `AITool`, `SearchIndex`.
-
 Username: admin
 Email address: admin@yahoo.com
 Password: admin123
+
+http://127.0.0.1:8000/admin/ — manage `Category`, `AIType`, `Tag`, `AITool`, `SearchIndex`.
+
+## Features
+
+- **Catalog** — list AI tools and tutorials with short descriptions and detail pages.
+- **Filters** — narrow by category, AI type, and tags (sidebar).
+- **Search** — query the catalog from the header or home.
+- **Favorites** — bookmark tools in the session and revisit them from the dashboard.
+- **Dashboard** — simple charts (e.g. tools per category / type).   
+- **Admin** — add or edit catalog entries and search index rows.
+- **Seed data** — `seed_ai_library` loads demo content from `catalog/data/ai_tools_seed.json`.
 
 ## Stack
 

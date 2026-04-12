@@ -3,7 +3,7 @@
   <div class="max-w-app nav-inner">
     <a href="{% url 'catalog:index' %}" class="d-flex align-items-center gap-2 text-decoration-none d-lg-none">
       <span class="brand-mark">DL</span>
-      <span class="brand-text-title">Digital Library</span>
+      <span class="brand-text-title">Digital library of AI tools and tutorials</span>
     </a>
 
     <div class="search-field-wrap flex-grow-1 position-relative mx-lg-2" style="max-width:28rem;">
@@ -15,7 +15,7 @@
           {% endif %}
         {% endfor %}
         <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <input type="search" name="q" id="nav-search-input" placeholder="Search — instant filter…" value="{{ search_q|default:'' }}" autocomplete="off">
+        <input type="search" name="q" id="nav-search-input" placeholder="Search catalog…" value="{{ search_q|default:'' }}" autocomplete="off">
       </form>
       <div id="search-suggest" class="search-suggest-dropdown d-none" role="listbox" aria-label="Suggestions"></div>
     </div>

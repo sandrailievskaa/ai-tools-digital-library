@@ -1,35 +1,19 @@
 {% extends "catalog/saas_app.html" %}
 {% load catalog_tags %}
 
-{% block title %}Digital Library of AI Tools &amp; Tutorials{% endblock %}
+{% block title %}Digital library of AI tools and tutorials{% endblock %}
 
 {% block app_body %}
 <main class="flex-grow-1 catalog-page">
   {% if show_hero %}
   <section class="max-w-app py-5 py-lg-5 mx-auto px-3">
-    <div class="hero-enhanced">
-      <div class="hero-pattern" aria-hidden="true"></div>
-      <div class="hero-glow hero-glow-a" aria-hidden="true"></div>
-      <div class="hero-glow hero-glow-b" aria-hidden="true"></div>
-      <div class="hero-float-layer" aria-hidden="true">
-        <span class="hero-float-icon hero-float-1">{% include "catalog/partials/hero_icon_svg.html" with icon="spark" %}</span>
-        <span class="hero-float-icon hero-float-2">{% include "catalog/partials/hero_icon_svg.html" with icon="chip" %}</span>
-        <span class="hero-float-icon hero-float-3">{% include "catalog/partials/hero_icon_svg.html" with icon="wand" %}</span>
-        <span class="hero-float-icon hero-float-4">{% include "catalog/partials/hero_icon_svg.html" with icon="image" %}</span>
-        <span class="hero-float-icon hero-float-5">{% include "catalog/partials/hero_icon_svg.html" with icon="chat" %}</span>
-        <span class="hero-float-icon hero-float-6">{% include "catalog/partials/hero_icon_svg.html" with icon="code" %}</span>
-      </div>
+    <div class="hero-simple">
       <div class="hero-content">
-    <p class="section-kicker mb-2">Metadata · Classification · Retrieval</p>
-    <h1 class="hero-title">Digital library of <span class="text-gradient">AI tools</span> &amp; tutorials</h1>
-    <p class="text-muted lead mb-4 hero-lead" style="max-width:36rem;font-size:1.05rem;">
-      Curated digital objects with structured metadata, faceted filters, and a lightweight search index—mirroring how real digital libraries organize knowledge.
-    </p>
-    <div class="d-flex flex-wrap gap-2 mb-5">
-      <span class="pill">Semantic fields</span>
-      <span class="pill pill-sky">Controlled vocabulary</span>
-      <span class="pill" style="background:rgba(167,139,250,0.15);color:var(--purple);">Faceted browse</span>
-    </div>
+        <p class="section-kicker mb-2">Browse · Filter · Search</p>
+        <h1 class="hero-title">Digital library of AI tools and tutorials</h1>
+        <p class="text-muted lead mb-4 hero-lead" style="max-width:32rem;font-size:1.05rem;">
+          Browse short descriptions and open full details. Use the sidebar filters or search when you want a smaller list.
+        </p>
 
     <form class="d-md-none mb-4" method="get" action="{% url 'catalog:index' %}" id="mobile-catalog-search">
       {% for key, values in request.GET.lists %}
@@ -38,19 +22,19 @@
         {% endif %}
       {% endfor %}
       <label class="sr-only" for="mq">Search</label>
-      <input class="form-control form-control-lg rounded-3" id="mq" name="q" type="search" placeholder="Search catalog…" value="{{ search_q }}" autocomplete="off">
+      <input class="form-control form-control-lg rounded-3" id="mq" name="q" type="search" placeholder="Search…" value="{{ search_q }}" autocomplete="off">
     </form>
 
     <div class="row row-cols-2 row-cols-md-4 g-3 mb-5">
-      <div class="col"><div class="stat-tile"><div class="stat-value text-gradient">{{ stats.total }}</div><div class="small text-muted">Objects</div></div></div>
+      <div class="col"><div class="stat-tile"><div class="stat-value">{{ stats.total }}</div><div class="small text-muted">Tools</div></div></div>
       <div class="col"><div class="stat-tile"><div class="stat-value">{{ stats.categories }}</div><div class="small text-muted">Categories</div></div></div>
       <div class="col"><div class="stat-tile"><div class="stat-value">{{ stats.types }}</div><div class="small text-muted">Types</div></div></div>
-      <div class="col"><div class="stat-tile"><div class="stat-value">{{ stats.tags }}</div><div class="small text-muted">Keywords</div></div></div>
+      <div class="col"><div class="stat-tile"><div class="stat-value">{{ stats.tags }}</div><div class="small text-muted">Tags</div></div></div>
     </div>
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h2 class="h5 fw-semibold mb-0" style="letter-spacing:-0.02em;">Popular in catalog</h2>
-      <a class="small fw-medium" href="{% url 'catalog:dashboard' %}">Analytics →</a>
+      <h2 class="h5 fw-semibold mb-0" style="letter-spacing:-0.02em;">Popular</h2>
+      <a class="small fw-medium" href="{% url 'catalog:dashboard' %}">Dashboard →</a>
     </div>
     <div class="d-flex gap-3 overflow-x-auto pb-2 mb-5" style="scroll-snap-type:x mandatory;">
       {% for tool in popular_tools %}
@@ -61,7 +45,7 @@
     </div>
 
     {% if suggested_tools %}
-    <h2 class="h5 fw-semibold mb-3" style="letter-spacing:-0.02em;">Suggested next</h2>
+    <h2 class="h5 fw-semibold mb-3" style="letter-spacing:-0.02em;">More to explore</h2>
     <div class="row g-3 mb-5">
       {% for tool in suggested_tools %}
         <div class="col-md-4">{% include "catalog/partials/tool_card.html" with tool=tool favorite_ids=favorite_ids %}</div>
