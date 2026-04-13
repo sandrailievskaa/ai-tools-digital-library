@@ -1,0 +1,36 @@
+{% load catalog_tags %}
+<aside class="app-sidebar d-none d-lg-flex flex-column flex-shrink-0" aria-label="Main">
+  <div class="app-sidebar-inner">
+    <a href="{% url 'catalog:index' %}" class="app-sidebar-brand text-decoration-none">
+      <span class="brand-mark">DL</span>
+      <span class="app-sidebar-brand-text">
+        <span class="d-block brand-text-title">Digital library</span>
+        <span class="d-block brand-text-sub">AI tools &amp; tutorials</span>
+      </span>
+    </a>
+    <nav class="app-sidebar-nav">
+      <a class="app-sidebar-link js-catalog-nav {% if request.resolver_match.url_name == 'index' and not request.GET.favorites %}active{% endif %}" href="{% url 'catalog:index' %}">
+        <span class="app-sidebar-ico">◇</span> Tools
+      </a>
+      <a class="app-sidebar-link {% if request.resolver_match.url_name == 'categories' %}active{% endif %}" href="{% url 'catalog:categories' %}">
+        <span class="app-sidebar-ico">▦</span> Categories
+      </a>
+      <a class="app-sidebar-link js-catalog-nav {% if request.GET.favorites %}active{% endif %}" href="{% url 'catalog:index' %}?favorites=1">
+        <span class="app-sidebar-ico">♥</span> Favorites
+        <span class="app-sidebar-badge js-fav-count-badge{% if not favorite_count %} d-none{% endif %}">{{ favorite_count|default:0 }}</span>
+      </a>
+      <a class="app-sidebar-link {% if request.resolver_match.url_name == 'tutorials' %}active{% endif %}" href="{% url 'catalog:tutorials' %}">
+        <span class="app-sidebar-ico">▣</span> Tutorials
+      </a>
+      <a class="app-sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'catalog:dashboard' %}">
+        <span class="app-sidebar-ico">▤</span> Analytics
+      </a>
+    </nav>
+
+    <div class="recent-viewed-panel">
+      <div class="recent-viewed-head">Recently viewed</div>
+      <ul class="recent-viewed-list" id="recent-tools-list" aria-label="Recently viewed tools"></ul>
+      <p class="recent-viewed-empty small text-muted mb-0" id="recent-tools-empty">Open a tool page to build your trail.</p>
+    </div>
+  </div>
+</aside>

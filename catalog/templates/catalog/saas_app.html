@@ -1,0 +1,56 @@
+{% extends "catalog/base.html" %}
+{% load static %}
+
+{% block body %}
+<form class="d-none" aria-hidden="true">{% csrf_token %}</form>
+<div class="app-shell">
+  {% include "catalog/partials/app_sidebar.html" %}
+  <div class="app-main flex-grow-1 min-vh-100 d-flex flex-column min-w-0">
+    {% include "catalog/partials/navbar.html" %}
+    <div class="flex-grow-1">
+      {% block app_body %}{% endblock %}
+    </div>
+  </div>
+</div>
+
+{% include "catalog/partials/mobile_dock.html" %}
+
+<div class="modal fade" id="toolPreviewModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content card-glass border-0">
+      <div class="modal-header border-0 pb-0">
+        <h2 class="modal-title h5 fw-semibold">Quick preview</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-2" id="toolPreviewModalBody">
+        <p class="text-muted small mb-0">Loading…</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{ favorite_slugs|json_script:"fav-slugs-data" }}
+
+<div id="app-config" class="d-none" hidden
+  data-catalog-index="{% url 'catalog:index' %}"
+  data-catalog-partial="{% url 'catalog:catalog_partial' %}"
+  data-search-suggest="{% url 'catalog:search_suggest' %}"
+  data-dashboard-url="{% url 'catalog:dashboard' %}"
+  data-tutorials-url="{% url 'catalog:tutorials' %}"
+  data-categories-url="{% url 'catalog:categories' %}"></div>
+<script src="{% static 'catalog/js/catalog-shell.js' %}"></script>
+
+<script>
+(function () {
+  // Always trust the server as the source of truth.
+  // Keep localStorage in sync with the server state — never push local back up.
+  var el = document.getElementById('fav-slugs-data');
+  if (!el) return;
+  try {
+    var server = JSON.parse(el.textContent);
+    if (!Array.isArray(server)) server = [];
+    localStorage.setItem('dl_fav_slugs', JSON.stringify(server));
+  } catch (e) { /* ignore */ }
+})();
+</script>
+{% endblock %}

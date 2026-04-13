@@ -1,0 +1,202 @@
+[
+  {
+    "name": "Figma AI",
+    "type": "UI Design",
+    "description": "AI-powered design assistant for creating UI mockups and prototypes.",
+    "tags": ["design", "ui", "ux", "prototyping"],
+    "difficulty": "Beginner",
+    "category": "Design Tools",
+    "link": "https://figma.com",
+    "image": "figma.png"
+  },
+  {
+    "name": "Gamma AI",
+    "type": "Presentation",
+    "description": "AI tool for generating presentations, documents, and web pages instantly.",
+    "tags": ["presentation", "docs", "ai"],
+    "difficulty": "Beginner",
+    "category": "Productivity",
+    "link": "https://gamma.app",
+    "image": "gamma.png"
+  },
+  {
+    "name": "Lovable AI",
+    "type": "Web Development",
+    "description": "AI tool for generating full-stack web apps from prompts.",
+    "tags": ["web", "fullstack", "ai", "generator"],
+    "difficulty": "Beginner",
+    "category": "Development Tools",
+    "link": "https://lovable.dev",
+    "image": "lovable.png"
+  },
+  {
+    "name": "Cursor AI",
+    "type": "Code Assistant",
+    "description": "AI-powered code editor that helps generate and refactor code.",
+    "tags": ["coding", "ide", "assistant", "ai"],
+    "difficulty": "Intermediate",
+    "category": "Development Tools",
+    "link": "https://cursor.sh",
+    "image": "cursor.png"
+  },
+  {
+    "name": "ChatGPT",
+    "type": "Conversational AI",
+    "description": "Advanced AI assistant for writing, coding, and problem solving.",
+    "tags": ["chatbot", "writing", "coding", "ai"],
+    "difficulty": "Beginner",
+    "category": "General AI",
+    "link": "https://chat.openai.com",
+    "image": "chatgpt.png"
+  },
+  {
+    "name": "Midjourney",
+    "type": "Image Generation",
+    "description": "AI tool for generating high-quality artistic images from text prompts.",
+    "tags": ["images", "art", "generation", "creative"],
+    "difficulty": "Intermediate",
+    "category": "Creative AI",
+    "link": "https://midjourney.com",
+    "image": "midjourney.png"
+  },
+  {
+    "name": "DALL·E",
+    "type": "Image Generation",
+    "description": "AI system that creates images from textual descriptions.",
+    "tags": ["images", "openai", "generation"],
+    "difficulty": "Beginner",
+    "category": "Creative AI",
+    "link": "https://openai.com/dall-e",
+    "image": "dalle.png"
+  },
+  {
+    "name": "Runway ML",
+    "type": "Video Generation",
+    "description": "AI-powered video editing and generation platform.",
+    "tags": ["video", "editing", "ai"],
+    "difficulty": "Intermediate",
+    "category": "Media AI",
+    "link": "https://runwayml.com",
+    "image": "runway.png"
+  },
+  {
+    "name": "Notion AI",
+    "type": "Productivity",
+    "description": "AI assistant integrated into Notion for writing and organization.",
+    "tags": ["notes", "productivity", "writing"],
+    "difficulty": "Beginner",
+    "category": "Productivity",
+    "link": "https://notion.so",
+    "image": "notion.png"
+  },
+  {
+    "name": "Copy.ai",
+    "type": "Content Writing",
+    "description": "AI tool for generating marketing copy and blog content.",
+    "tags": ["writing", "marketing", "copy"],
+    "difficulty": "Beginner",
+    "category": "Content Creation",
+    "link": "https://copy.ai",
+    "image": "copyai.png"
+  },
+  {
+    "name": "Jasper AI",
+    "type": "Content Writing",
+    "description": "AI writing assistant for marketing and business content.",
+    "tags": ["writing", "seo", "marketing"],
+    "difficulty": "Beginner",
+    "category": "Content Creation",
+    "link": "https://jasper.ai",
+    "image": "jasper.png"
+  },
+  {
+    "name": "Claude AI",
+    "type": "Conversational AI",
+    "description": "AI assistant for reasoning, writing, and coding tasks.",
+    "tags": ["chatbot", "reasoning", "ai"],
+    "difficulty": "Beginner",
+    "category": "General AI",
+    "link": "https://claude.ai",
+    "image": "claude.png"
+  },
+  {
+    "name": "Perplexity AI",
+    "type": "Search Engine",
+    "description": "AI-powered search engine with real-time answers.",
+    "tags": ["search", "research", "ai"],
+    "difficulty": "Beginner",
+    "category": "Research Tools",
+    "link": "https://perplexity.ai",
+    "image": "perplexity.png"
+  },
+  {
+    "name": "Leonardo AI",
+    "type": "Image Generation",
+    "description": "AI platform for generating game assets and illustrations.",
+    "tags": ["art", "gaming", "images"],
+    "difficulty": "Intermediate",
+    "category": "Creative AI",
+    "link": "https://leonardo.ai",
+    "image": "leonardo.png"
+  },
+  {
+    "name": "Uizard",
+    "type": "UI Design",
+    "description": "AI tool that converts sketches into UI designs.",
+    "tags": ["ui", "design", "prototype"],
+    "difficulty": "Beginner",
+    "category": "Design Tools",
+    "link": "https://uizard.io",
+    "image": "uizard.png"
+  },
+  {
+    "name": "Framer AI",
+    "type": "Web Design",
+    "description": "AI website builder for fast landing page creation.",
+    "tags": ["web", "design", "builder"],
+    "difficulty": "Beginner",
+    "category": "Development Tools",
+    "link": "https://framer.com",
+    "image": "framer.png"
+  },
+  {
+    "name": "Tome AI",
+    "type": "Presentation",
+    "description": "AI storytelling tool for generating presentations.",
+    "tags": ["slides", "storytelling", "ai"],
+    "difficulty": "Beginner",
+    "category": "Productivity",
+    "link": "https://tome.app",
+    "image": "tome.png"
+  },
+  {
+    "name": "Beautiful.ai",
+    "type": "Presentation",
+    "description": "AI-powered slide design tool.",
+    "tags": ["presentation", "design"],
+    "difficulty": "Beginner",
+    "category": "Productivity",
+    "link": "https://beautiful.ai",
+    "image": "beautifulai.png"
+  },
+  {
+    "name": "Pictory AI",
+    "type": "Video Generation",
+    "description": "Turns text into short videos automatically.",
+    "tags": ["video", "automation"],
+    "difficulty": "Beginner",
+    "category": "Media AI",
+    "link": "https://pictory.ai",
+    "image": "pictory.png"
+  },
+  {
+    "name": "Synthesia",
+    "type": "Video Generation",
+    "description": "AI avatar video creation platform.",
+    "tags": ["avatar", "video", "presentation"],
+    "difficulty": "Intermediate",
+    "category": "Media AI",
+    "link": "https://synthesia.io",
+    "image": "synthesia.png"
+  }
+]

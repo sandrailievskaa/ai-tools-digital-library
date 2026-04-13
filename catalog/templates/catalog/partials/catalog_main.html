@@ -1,0 +1,69 @@
+{% load catalog_tags %}
+<div id="catalog-main" data-partial-url="{% url 'catalog:catalog_partial' %}">
+  <button class="btn btn-outline-secondary w-100 d-lg-none mb-3 rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#filtersSidebar">Show filters</button>
+
+  <div class="row g-4">
+    <aside class="col-lg-3 catalog-facets-col">
+      <div class="collapse" id="filtersSidebar">
+        <div class="card-glass p-3 p-lg-4 sticky-top catalog-facets-card" style="top:5.5rem;">
+          {% include "catalog/partials/filter_sidebar.html" %}
+        </div>
+      </div>
+    </aside>
+    <div class="col-lg-9 catalog-results-col">
+      {% if has_active_filters %}
+      <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+        <span class="small text-muted fw-medium">Active filters:</span>
+        {% if search_q %}
+          <a class="filter-chip filter-chip-active js-catalog-nav" href="{% url 'catalog:index' %}{% without_keys 'q' %}">“{{ search_q }}” ✕</a>
+        {% endif %}
+        {% for s in selected_categories %}
+          <a class="filter-chip filter-chip-active js-catalog-nav" href="{% url 'catalog:index' %}{% toggle_list_param 'category' s %}">{{ s }} ✕</a>
+        {% endfor %}
+        {% for s in selected_atypes %}
+          <a class="filter-chip filter-chip-active js-catalog-nav" href="{% url 'catalog:index' %}{% toggle_list_param 'atype' s %}">{{ s }} ✕</a>
+        {% endfor %}
+        {% if selected_difficulty %}
+          <a class="filter-chip filter-chip-active js-catalog-nav" href="{% url 'catalog:index' %}{% toggle_difficulty selected_difficulty %}">{{ selected_difficulty }} ✕</a>
+        {% endif %}
+        {% for s in selected_tags %}
+          <a class="filter-chip filter-chip-active js-catalog-nav" href="{% url 'catalog:index' %}{% toggle_list_param 'tag' s %}">{{ s }} ✕</a>
+        {% endfor %}
+        <a class="small text-muted ms-1 js-catalog-nav" href="{% url 'catalog:index' %}">Clear all</a>
+      </div>
+      {% endif %}
+
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h2 class="h5 fw-semibold mb-0">{{ grid_title }}</h2>
+        <div class="d-flex align-items-center gap-2">
+          <span class="small text-muted"><span class="js-results-count">{{ tools|length }}</span> results</span>
+          <div class="btn-group btn-group-sm" role="group" aria-label="View mode">
+            <button type="button" class="btn btn-outline-secondary rounded-start-3 px-3 js-view-grid" title="Grid">▦</button>
+            <button type="button" class="btn btn-outline-secondary rounded-end-3 px-3 js-view-list" title="List">☰</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="catalog-dynamic" class="catalog-dynamic">
+      {% if tools %}
+        <div class="row g-3 view-grid" id="tools-container">
+          {% for tool in tools %}
+            <div class="col-12 col-sm-6 col-xl-4 catalog-tool-slot catalog-tool-enter">
+              {% include "catalog/partials/tool_card.html" with tool=tool favorite_ids=favorite_ids %}
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="catalog-empty-state card-glass border-0 text-center" role="status">
+          <div class="catalog-empty-icon mx-auto mb-3" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M8 8h6M8 12h4"/></svg>
+          </div>
+          <p class="fw-semibold mb-1" style="color:var(--text);letter-spacing:-0.02em;">No tools found.</p>
+          <p class="text-muted small mb-4" style="max-width:18rem;margin-left:auto;margin-right:auto;">Try different filters.</p>
+          <a href="{% url 'catalog:index' %}" class="btn-primary-saas js-catalog-nav">Clear filters</a>
+        </div>
+      {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

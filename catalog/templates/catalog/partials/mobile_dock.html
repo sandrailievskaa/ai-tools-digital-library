@@ -1,0 +1,18 @@
+<nav class="mobile-dock d-lg-none" aria-label="Mobile">
+  <a href="{% url 'catalog:index' %}" class="{% if request.resolver_match.url_name == 'index' and not request.GET.favorites %}active{% endif %}">
+    <span style="font-size:1.1rem;">⌂</span>
+    <span>Catalog</span>
+  </a>
+  <a href="{% url 'catalog:dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+    <span style="font-size:1.1rem;">▤</span>
+    <span>Dashboard</span>
+  </a>
+  <a href="{% url 'catalog:index' %}?focus=search">
+    <span style="font-size:1.1rem;">⌕</span>
+    <span>Search</span>
+  </a>
+  <a href="{% url 'catalog:index' %}?favorites=1" class="{% if request.GET.favorites %}active{% endif %}">
+    <span style="font-size:1.1rem;">♥</span>
+    <span>Saved</span>
+  </a>
+</nav>

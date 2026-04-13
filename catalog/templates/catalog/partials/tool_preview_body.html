@@ -1,0 +1,24 @@
+{% load catalog_tags %}
+<div class="row g-3 align-items-start">
+  <div class="col-md-5">
+    {% with purl=tool|preview_url %}
+      {% if purl %}
+        <img src="{{ purl }}" class="img-fluid rounded-3 w-100" style="max-height:220px;object-fit:cover;" alt="" onerror="this.style.display='none'">
+      {% else %}
+        <div class="tool-thumb rounded-3" style="height:180px;"><div class="tool-thumb-fallback w-100 h-100 d-flex align-items-center justify-content-center">{{ tool.name|first_word|slice:":2"|upper }}</div></div>
+      {% endif %}
+    {% endwith %}
+  </div>
+  <div class="col-md-7">
+    {% if tool.ai_type %}<span class="pill pill-sky mb-2 d-inline-block">{{ tool.ai_type.name }}</span>{% endif %}
+    {% if tool.category %}<span class="pill mb-2 d-inline-block ms-1">{{ tool.category.name }}</span>{% endif %}
+    <h3 class="h5 fw-semibold mt-1">{{ tool.name }}</h3>
+    <p class="text-muted small mb-3">{{ tool.description }}</p>
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{{ tool.get_absolute_url }}" class="btn-primary-saas small">View details</a>
+      {% if tool.link %}
+        <a href="{{ tool.link }}" class="btn-ghost small" target="_blank" rel="noopener noreferrer">Open site →</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
