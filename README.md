@@ -17,6 +17,7 @@ A small web catalog for AI tools and related tutorials. Users browse entries, fi
 - **Tutorials** — Attach tutorial links and short descriptions to a tool on its detail page.
 - **Bookmarks** — Star tools; favorites are stored **per session** (server-side, keyed to the session cookie) and listed on the dashboard.
 - **Dashboard** — Charts such as tool counts by category or type.
+- **Floating assistant** — Fixed **bottom-right** **avatar** (library guide tips and quick links) and an **FAQ chatbot** in a **chat panel** with topic prompts; answers cover the catalog, filters, favorites, and search in-page.
 - **Admin & seed** — CRUD for catalog models; `seed_ai_library` imports sample content from `catalog/data/ai_tools_seed.json`.
 
 ## Highlights
