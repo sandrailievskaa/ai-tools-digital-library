@@ -39,5 +39,8 @@ python manage.py runserver
 
 - App: http://127.0.0.1:8000/  
 - Dashboard: http://127.0.0.1:8000/dashboard/
+- Demo: https://ai-tools-digital-library.onrender.com/ 
 
 Create an admin user with `python manage.py createsuperuser`, then open `/admin/` to manage categories, types, tags, tools, and search index rows.
+
+
